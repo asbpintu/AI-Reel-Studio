@@ -239,3 +239,4 @@ coverage/
 .pytest_cache/
 
 require_later_during_next_js.py
+test.py

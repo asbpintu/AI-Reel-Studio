@@ -82,6 +82,7 @@ docs/
 │
 ├── 01_Project_Setup.md
 ├── 02_Database_Design.md
+|-- 02.2 Authentication.md
 ├── 03_Backend_Architecture.md
 ├── 04_AI_Pipeline.md
 ├── 05_Frontend_Architecture.md
