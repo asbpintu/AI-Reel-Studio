@@ -216,3 +216,26 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+
+.venv/
+__pycache__/
+*.pyc
+
+.env
+
+logs/
+
+storage/
+
+.vscode/
+
+.idea/
+
+node_modules/
+
+coverage/
+
+.pytest_cache/
+
+require_later_during_next_js.py

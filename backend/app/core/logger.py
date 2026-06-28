@@ -1,4 +1,5 @@
 from pathlib import Path
+import sys
 
 from loguru import logger
 
@@ -10,6 +11,12 @@ logger.add(
     LOG_FOLDER / "app.log",
     rotation="10 MB",
     retention="30 days",
+    level="INFO",
+    enqueue=True,
+)
+
+logger.add(
+    sys.stdout,
     level="INFO",
     enqueue=True,
 )
