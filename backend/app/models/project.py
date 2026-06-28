@@ -29,4 +29,4 @@ class Project(BaseModel):
         String(1000)
     )
 
-    user = relationship("User")
+    user = relationship("User", back_populates="projects")
