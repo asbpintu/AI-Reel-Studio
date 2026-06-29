@@ -240,3 +240,4 @@ coverage/
 
 require_later_during_next_js.py
 test.py
+sql/
