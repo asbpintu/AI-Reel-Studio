@@ -1,13 +1,11 @@
 import uuid
 
-from sqlalchemy import Boolean
-from sqlalchemy import String
-from sqlalchemy.orm import Mapped
-from sqlalchemy.orm import mapped_column
-from sqlalchemy.orm import relationship
+from enum import Enum
+
+from sqlalchemy import Boolean, String
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.models.base_model import BaseModel
-from enum import Enum
 
 
 class UserRole(str, Enum):
@@ -19,86 +17,77 @@ class UserRole(str, Enum):
 class User(BaseModel):
     __tablename__ = "Users"
 
-    UserId: Mapped[int] = mapped_column(
+    user_id: Mapped[int] = mapped_column(
+        "UserId",
         primary_key=True,
-        autoincrement=True
+        autoincrement=True,
     )
 
-    PublicId: Mapped[str] = mapped_column(
+    public_id: Mapped[str] = mapped_column(
+        "PublicId",
         String(36),
         default=lambda: str(uuid.uuid4()),
         unique=True,
         nullable=False,
-        index=True
+        index=True,
     )
 
-    Username: Mapped[str] = mapped_column(
+    username: Mapped[str] = mapped_column(
+        "Username",
         String(50),
         unique=True,
         nullable=False,
-        index=True
+        index=True,
     )
 
-    Email: Mapped[str] = mapped_column(
+    email: Mapped[str] = mapped_column(
+        "Email",
         String(255),
         unique=True,
         nullable=False,
-        index=True
+        index=True,
     )
 
-    PasswordHash: Mapped[str] = mapped_column(
+    password_hash: Mapped[str] = mapped_column(
+        "PasswordHash",
         String(255),
-        nullable=False
+        nullable=False,
     )
 
-    FirstName: Mapped[str] = mapped_column(
+    first_name: Mapped[str] = mapped_column(
+        "FirstName",
         String(100),
-        nullable=False
+        nullable=False,
     )
 
-    LastName: Mapped[str] = mapped_column(
+    last_name: Mapped[str] = mapped_column(
+        "LastName",
         String(100),
-        nullable=False
+        nullable=False,
     )
 
-    ProfileImage: Mapped[str | None] = mapped_column(
+    profile_image: Mapped[str | None] = mapped_column(
+        "ProfileImage",
         String(500),
-        nullable=True
+        nullable=True,
     )
 
-    Role: Mapped[str] = mapped_column(
+    role: Mapped[str] = mapped_column(
+        "Role",
         String(50),
-        default="User",
-        nullable=False
+        default=UserRole.USER.value,
+        nullable=False,
     )
 
-    IsActive: Mapped[bool] = mapped_column(
+    is_active: Mapped[bool] = mapped_column(
+        "IsActive",
         Boolean,
         default=True,
-        nullable=False
+        nullable=False,
     )
 
-    Projects = relationship(
+    projects = relationship(
         "Project",
         back_populates="user",
-        cascade="all, delete-orphan"
+        cascade="all, delete-orphan",
     )
-
-    Role: Mapped[str] = mapped_column(
-    String(50),
-    default=UserRole.USER.value,
-    nullable=False
-)
-
-
-from sqlalchemy.orm import relationship
-
-Projects = relationship(
-    "Project",
-    back_populates="user"
-)
-
-user = relationship(
-    "User",
-    back_populates="Projects"
-)

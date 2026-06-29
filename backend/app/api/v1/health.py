@@ -8,7 +8,6 @@ from app.dependencies.database import get_db
 from app.core.config import settings
 
 router = APIRouter(
-    prefix="/api/v1",
     tags=["Health"],
 )
 

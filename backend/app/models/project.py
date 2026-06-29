@@ -1,9 +1,5 @@
-from sqlalchemy import ForeignKey
-from sqlalchemy import String
-
-from sqlalchemy.orm import Mapped
-from sqlalchemy.orm import mapped_column
-from sqlalchemy.orm import relationship
+from sqlalchemy import ForeignKey, String
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.models.base_model import BaseModel
 
@@ -12,21 +8,28 @@ class Project(BaseModel):
 
     __tablename__ = "Projects"
 
-    ProjectId: Mapped[int] = mapped_column(
+    project_id: Mapped[int] = mapped_column(
+        "ProjectId",
         primary_key=True,
-        autoincrement=True
+        autoincrement=True,
     )
 
-    UserId: Mapped[int] = mapped_column(
-        ForeignKey("Users.UserId")
+    user_id: Mapped[int] = mapped_column(
+        "UserId",
+        ForeignKey("Users.UserId"),
     )
 
-    ProjectName: Mapped[str] = mapped_column(
-        String(200)
+    project_name: Mapped[str] = mapped_column(
+        "ProjectName",
+        String(200),
     )
 
-    Description: Mapped[str | None] = mapped_column(
-        String(1000)
+    description: Mapped[str | None] = mapped_column(
+        "Description",
+        String(1000),
     )
 
-    user = relationship("User", back_populates="projects")
+    user = relationship(
+        "User",
+        back_populates="projects",
+    )
