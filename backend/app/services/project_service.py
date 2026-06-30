@@ -19,13 +19,24 @@ class ProjectService:
         current_user,
     ):
 
-        project = Project(
-            user_id=current_user.user_id,
-            project_name=request.project_name,
-            description=request.description,
-        )
+        try:
 
-        return self.repository.create(project)
+            project = Project(
+                user_id=current_user.user_id,
+                project_name=request.project_name,
+                description=request.description,
+            )
+
+            project = self.repository.create(project)
+
+            self.repository.db.commit()
+
+            return project
+
+        except Exception:
+
+            self.repository.db.rollback()
+            raise
 
     def get_my_projects(self, current_user):
 
@@ -49,31 +60,48 @@ class ProjectService:
             )
 
         return project
-    
+
     def update_project(
         self,
         public_id: str,
         request: ProjectUpdate,
     ):
 
-        project = self.get_project(public_id)
+        try:
 
-        if request.project_name is not None:
-            project.project_name = request.project_name
+            project = self.get_project(public_id)
 
-        if request.description is not None:
-            project.description = request.description
+            if request.project_name is not None:
+                project.project_name = request.project_name
 
-        self.repository.update()
+            if request.description is not None:
+                project.description = request.description
 
-        return project
+            self.repository.update(project)
 
+            self.repository.db.commit()
+
+            return project
+
+        except Exception:
+
+            self.repository.db.rollback()
+            raise
 
     def delete_project(
         self,
         public_id: str,
     ):
 
-        project = self.get_project(public_id)
+        try:
 
-        self.repository.delete(project)
+            project = self.get_project(public_id)
+
+            self.repository.delete(project)
+
+            self.repository.db.commit()
+
+        except Exception:
+
+            self.repository.db.rollback()
+            raise

@@ -13,7 +13,7 @@ class ReelRepository:
 
         self.db.add(reel)
 
-        self.db.commit()
+        self.db.flush()
 
         self.db.refresh(reel)
 

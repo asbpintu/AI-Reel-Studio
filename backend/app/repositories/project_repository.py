@@ -10,7 +10,7 @@ class ProjectRepository:
 
     def create(self, project: Project):
         self.db.add(project)
-        self.db.commit()
+        self.db.flush()
         self.db.refresh(project)
         return project
 
@@ -29,10 +29,10 @@ class ProjectRepository:
         )
     def update(self):
 
-        self.db.commit()
+        self.db.flush()
 
 
     def delete(self, project):
 
         self.db.delete(project)
-        self.db.commit()
+        self.db.flush()

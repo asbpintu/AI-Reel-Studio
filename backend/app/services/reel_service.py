@@ -17,18 +17,25 @@ class ReelService:
         prompt: str,
     ):
 
-        reel = Reel(
+        try:
 
-            project_id=project_id,
+            reel = Reel(
+                project_id=project_id,
+                title=title,
+                prompt=prompt,
+                status="Pending",
+            )
 
-            title=title,
+            reel = self.repository.create(reel)
 
-            prompt=prompt,
+            self.repository.db.commit()
 
-            status="Pending",
-        )
+            return reel
 
-        return self.repository.create(reel)
+        except Exception:
+
+            self.repository.db.rollback()
+            raise
 
     def list_reels(
         self,
