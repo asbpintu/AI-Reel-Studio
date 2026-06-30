@@ -27,10 +27,11 @@ class ProjectRepository:
             .filter(Project.public_id == public_id)
             .first()
         )
-    def update(self):
-
+    
+    def update(self, project):
         self.db.flush()
-
+        self.db.refresh(project)
+        return project
 
     def delete(self, project):
 

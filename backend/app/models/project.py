@@ -47,4 +47,10 @@ class Project(BaseModel):
     "Reel",
     back_populates="project",
     cascade="all, delete-orphan",
-)
+    )
+    
+    scripts = relationship(
+    "Script",
+    back_populates="project",
+    cascade="all, delete-orphan",
+    )
