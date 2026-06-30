@@ -27,3 +27,11 @@ class UserRepository:
         self.db.commit()
         self.db.refresh(user)
         return user
+    
+    def get_by_public_id(self, public_id: str):
+
+        return (
+            self.db.query(User)
+            .filter(User.public_id == public_id)
+            .first()
+        )
