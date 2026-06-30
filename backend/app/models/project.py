@@ -42,3 +42,9 @@ class Project(BaseModel):
         "User",
         back_populates="projects",
     )
+
+    reels = relationship(
+    "Reel",
+    back_populates="project",
+    cascade="all, delete-orphan",
+)
