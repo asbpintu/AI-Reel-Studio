@@ -5,12 +5,18 @@ from app.repositories.script_repository import ScriptRepository
 from app.repositories.project_repository import ProjectRepository
 from app.schemas.script import ScriptCreate, ScriptUpdate
 
+from app.services.ai_service import MockAIService
+from app.models.script import Script
+
 
 class ScriptService:
 
     def __init__(self, db):
+
+        self.db = db
         self.script_repository = ScriptRepository(db)
         self.project_repository = ProjectRepository(db)
+        self.ai_service = MockAIService()
 
     def create_script(
         self,
@@ -131,3 +137,46 @@ class ScriptService:
             )
 
         self.script_repository.delete(script)
+
+    def generate_script(
+        self,
+        project_public_id: str,
+        current_user,
+    ):
+
+        project = self.project_repository.get_by_public_id(
+            project_public_id
+        )
+
+        if project is None:
+            raise HTTPException(
+                status_code=404,
+                detail="Project not found",
+            )
+
+        if project.user_id != current_user.user_id:
+            raise HTTPException(
+                status_code=403,
+                detail="Access denied",
+            )
+
+        prompt = f"""
+    Project Name:
+    {project.project_name}
+
+    Description:
+    {project.description}
+    """
+
+        generated_script = self.ai_service.generate_script(
+            prompt
+        )
+
+        script = Script(
+            project_id=project.project_id,
+            prompt=prompt,
+            generated_script=generated_script,
+            status="Completed",
+        )
+
+        return self.script_repository.create(script)

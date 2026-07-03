@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 
 from app.dependencies.auth import get_current_user
@@ -106,5 +106,26 @@ def delete_script(
 
     service.delete_script(
         public_id,
+        current_user,
+    )
+
+@router.post(
+    "/projects/{project_public_id}/generate",
+    response_model=ScriptResponse,
+    status_code=status.HTTP_201_CREATED,
+)
+def generate_script(
+
+    project_public_id: str,
+
+    current_user=Depends(get_current_user),
+
+    db: Session = Depends(get_db),
+):
+
+    service = ScriptService(db)
+
+    return service.generate_script(
+        project_public_id,
         current_user,
     )
