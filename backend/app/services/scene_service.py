@@ -75,7 +75,6 @@ class SceneService:
                 image_prompt=item["image_prompt"],
                 duration_seconds=item["duration_seconds"],
             )
-
             scenes.append(scene)
 
         self.scene_repository.create_many(scenes)
