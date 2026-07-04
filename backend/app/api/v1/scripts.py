@@ -110,22 +110,15 @@ def delete_script(
     )
 
 @router.post(
-    "/projects/{project_public_id}/generate",
+    "/{script_public_id}/generate",
     response_model=ScriptResponse,
-    status_code=status.HTTP_201_CREATED,
+    status_code=status.HTTP_200_OK,
 )
 def generate_script(
-
-    project_public_id: str,
-
-    current_user=Depends(get_current_user),
-
+    script_public_id: str,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
-
     service = ScriptService(db)
 
-    return service.generate_script(
-        project_public_id,
-        current_user,
-    )
+    return service.generate_script(script_public_id, current_user)

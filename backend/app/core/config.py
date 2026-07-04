@@ -21,6 +21,9 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int
     REFRESH_TOKEN_EXPIRE_DAYS: int
 
+    LLM_PROVIDER: str
+    GEMINI_API_KEY: str
+
     model_config = SettingsConfigDict(
         env_file=".env",
         extra="ignore",

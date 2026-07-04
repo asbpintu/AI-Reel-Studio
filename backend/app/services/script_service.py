@@ -8,6 +8,11 @@ from app.schemas.script import ScriptCreate, ScriptUpdate
 from app.services.ai_service import MockAIService
 from app.models.script import Script
 
+from app.services.ai.llm_factory import LLMFactory
+from app.services.ai.prompt_builder import PromptBuilder
+
+import traceback
+from openai import RateLimitError, APIError
 
 class ScriptService:
 
@@ -16,7 +21,8 @@ class ScriptService:
         self.db = db
         self.script_repository = ScriptRepository(db)
         self.project_repository = ProjectRepository(db)
-        self.ai_service = MockAIService()
+        self.ai_service = LLMFactory.get_llm()
+        self.prompt_builder = PromptBuilder()
 
     def create_script(
         self,
@@ -140,19 +146,19 @@ class ScriptService:
 
     def generate_script(
         self,
-        project_public_id: str,
+        script_public_id: str,
         current_user,
     ):
 
-        project = self.project_repository.get_by_public_id(
-            project_public_id
-        )
+        script = self.script_repository.get_by_public_id(script_public_id)
 
-        if project is None:
+        if script is None:
             raise HTTPException(
                 status_code=404,
-                detail="Project not found",
+                detail="Script not found.",
             )
+
+        project = script.project
 
         if project.user_id != current_user.user_id:
             raise HTTPException(
@@ -160,23 +166,32 @@ class ScriptService:
                 detail="Access denied",
             )
 
-        prompt = f"""
-    Project Name:
-    {project.project_name}
+        try:
+            prompt = PromptBuilder.build_script_prompt(script.prompt)
 
-    Description:
-    {project.description}
-    """
+            generated_script = self.ai_service.generate_text(prompt)
 
-        generated_script = self.ai_service.generate_script(
-            prompt
-        )
+            script.generated_script = generated_script
+            script.status = "Completed"
 
-        script = Script(
-            project_id=project.project_id,
-            prompt=prompt,
-            generated_script=generated_script,
-            status="Completed",
-        )
+        except RateLimitError:
+            script.status = "Failed"
+            self.script_repository.update(script)
 
-        return self.script_repository.create(script)
+            raise HTTPException(
+                status_code=503,
+                detail="OpenAI quota exceeded. Please check your API billing."
+            )
+
+        except APIError as ex:
+            script.status = "Failed"
+            self.script_repository.update(script)
+
+            raise HTTPException(
+                status_code=500,
+                detail=str(ex)
+            )
+
+        self.script_repository.update(script)
+
+        return script
