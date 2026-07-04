@@ -1,10 +1,6 @@
-from sqlalchemy import ForeignKey
-from sqlalchemy import Integer
-from sqlalchemy import String
+from sqlalchemy import ForeignKey, Integer, String
 
-from sqlalchemy.orm import Mapped
-from sqlalchemy.orm import mapped_column
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.models.base_model import BaseModel
 
@@ -19,42 +15,29 @@ class Scene(BaseModel):
         autoincrement=True,
     )
 
-    reel_id: Mapped[int] = mapped_column(
-        "ReelId",
-        ForeignKey("Reels.ReelId"),
+    script_id: Mapped[int] = mapped_column(
+        "ScriptId",
+        ForeignKey("Scripts.ScriptId"),
     )
 
     scene_number: Mapped[int] = mapped_column(
         "SceneNumber",
-        Integer,
     )
 
     narration: Mapped[str] = mapped_column(
         "Narration",
-        String(4000),
     )
 
     image_prompt: Mapped[str] = mapped_column(
         "ImagePrompt",
-        String(4000),
     )
 
-    video_prompt: Mapped[str] = mapped_column(
-        "VideoPrompt",
-        String(4000),
+    duration_seconds: Mapped[int] = mapped_column(
+        "DurationSeconds",
+        default=5,
     )
 
-    duration: Mapped[int] = mapped_column(
-        "Duration",
-    )
-
-    status: Mapped[str] = mapped_column(
-        "Status",
-        String(50),
-        default="Pending",
-    )
-
-    reel = relationship(
-        "Reel",
+    script = relationship(
+        "Script",
         back_populates="scenes",
     )

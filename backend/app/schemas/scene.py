@@ -5,31 +5,18 @@ from pydantic import ConfigDict
 class SceneCreate(BaseModel):
 
     scene_number: int
-
     narration: str
-
     image_prompt: str
-
-    video_prompt: str
-
-    duration: int
+    duration_seconds: int
 
 
 class SceneResponse(BaseModel):
 
     scene_id: int
-
     scene_number: int
-
     narration: str
-
     image_prompt: str
-
-    video_prompt: str
-
-    duration: int
-
-    status: str
+    duration_seconds: int
 
     model_config = ConfigDict(
         from_attributes=True

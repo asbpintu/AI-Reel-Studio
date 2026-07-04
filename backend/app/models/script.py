@@ -48,3 +48,9 @@ class Script(BaseModel):
         "Project",
         back_populates="scripts",
     )
+
+    scenes = relationship(
+        "Scene",
+        back_populates="script",
+        cascade="all, delete-orphan",
+    )

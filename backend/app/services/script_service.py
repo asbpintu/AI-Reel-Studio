@@ -21,7 +21,7 @@ class ScriptService:
         self.db = db
         self.script_repository = ScriptRepository(db)
         self.project_repository = ProjectRepository(db)
-        self.ai_service = LLMFactory.get_llm()
+        self.ai_service = LLMFactory.create()
         self.prompt_builder = PromptBuilder()
 
     def create_script(

@@ -42,9 +42,3 @@ class Reel(BaseModel):
         "Project",
         back_populates="reels",
     )
-
-    scenes = relationship(
-    "Scene",
-    back_populates="reel",
-    cascade="all, delete-orphan",
-)

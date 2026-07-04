@@ -26,12 +26,16 @@ class SceneRepository:
         self.db.flush()
 
         return scenes
-
-    def get_by_reel(self, reel_id: int):
+    
+    def list_by_script(self, script_id: int):
 
         return (
             self.db.query(Scene)
-            .filter(Scene.reel_id == reel_id)
+            .filter(Scene.script_id == script_id)
             .order_by(Scene.scene_number)
             .all()
         )
+    
+    def delete_by_script(self, script_id: int):
+
+        self.db.query(Scene).filter(Scene.script_id == script_id).delete()
