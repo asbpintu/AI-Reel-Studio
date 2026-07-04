@@ -37,6 +37,16 @@ class Scene(BaseModel):
         default=5,
     )
 
+    image_url: Mapped[str | None] = mapped_column(
+        "ImageUrl",
+        nullable=True,
+    )
+
+    image_status: Mapped[str] = mapped_column(
+        "ImageStatus",
+        default="PENDING",
+    )
+
     script = relationship(
         "Script",
         back_populates="scenes",

@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from app.api.v1 import auth, health, users, projects, scripts, scenes
+from app.api.v1 import auth, health, users, projects, scripts, scenes, images
 
 api_router = APIRouter()
 
@@ -9,3 +9,4 @@ api_router.include_router(users.router)
 api_router.include_router(projects.router)
 api_router.include_router(scripts.router)
 api_router.include_router(scenes.router)
+api_router.include_router(images.router)

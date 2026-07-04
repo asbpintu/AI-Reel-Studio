@@ -13,6 +13,8 @@ from fastapi import HTTPException
 
 import json
 
+from app.services.image_service import ImageService
+
 
 class SceneService:
 
@@ -78,6 +80,84 @@ class SceneService:
             scenes.append(scene)
 
         self.scene_repository.create_many(scenes)
+        self.db.commit()
+
+        for scene in scenes:
+            self.db.refresh(scene)
+
+        return scenes
+    
+    def generate_image(
+        self,
+        scene_id: int,
+    ):
+        scene = self.scene_repository.get_by_scene_id(scene_id)
+
+        if scene is None:
+            raise HTTPException(
+                status_code=404,
+                detail="Scene not found."
+            )
+
+        image_service = ImageService(self.db)
+
+        image_url = image_service.generate(
+            scene.image_prompt
+        )
+
+        scene.image_url = image_url
+        scene.image_status = "COMPLETED"
+
+        self.scene_repository.update(scene)
+
+        self.db.commit()
+
+        return scene
+    
+    def generate_images(
+        self,
+        script_public_id: str,
+        current_user,
+    ):
+        script = self.script_repository.get_by_public_id(
+            script_public_id
+        )
+
+        if script is None:
+            raise HTTPException(
+                status_code=404,
+                detail="Script not found.",
+            )
+
+        if script.project.user_id != current_user.user_id:
+            raise HTTPException(
+                status_code=403,
+                detail="Access denied.",
+            )
+
+        scenes = self.scene_repository.list_by_script(
+            script.script_id
+        )
+
+        if not scenes:
+            raise HTTPException(
+                status_code=404,
+                detail="No scenes found.",
+            )
+
+        image_service = ImageService(self.db)
+
+        for scene in scenes:
+
+            image_url = image_service.generate(
+                scene.image_prompt
+            )
+
+            scene.image_url = image_url
+            scene.image_status = "COMPLETED"
+
+            self.scene_repository.update(scene)
+
         self.db.commit()
 
         for scene in scenes:

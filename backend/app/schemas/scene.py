@@ -18,6 +18,9 @@ class SceneResponse(BaseModel):
     image_prompt: str
     duration_seconds: int
 
+    image_url: str | None = None
+    image_status: str
+
     model_config = ConfigDict(
         from_attributes=True
     )
