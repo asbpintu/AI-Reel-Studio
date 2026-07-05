@@ -103,7 +103,9 @@ class SceneService:
         image_service = ImageService()
 
         image_url = image_service.generate(
-            scene.image_prompt
+            script_public_id=scene.script.public_id,
+            scene_id=scene.scene_id,
+            prompt=scene.image_prompt
         )
 
         scene.image_url = image_url
@@ -131,7 +133,9 @@ class SceneService:
         audio_service = AudioService(self.db)
 
         audio_url = audio_service.generate(
-            scene.narration
+            script_public_id=scene.script.public_id,
+            scene_id=scene.scene_id,
+            narration=scene.narration
         )
 
         scene.audio_url = audio_url
@@ -179,7 +183,9 @@ class SceneService:
         for scene in scenes:
 
             image_url = image_service.generate(
-                scene.image_prompt
+                script_public_id=scene.script.public_id,
+                scene_id=scene.scene_id,
+                prompt=scene.image_prompt
             )
 
             scene.image_url = image_url
@@ -230,7 +236,9 @@ class SceneService:
         for scene in scenes:
 
             audio_url = audio_service.generate(
-                scene.narration
+                script_public_id=scene.script.public_id,
+                scene_id=scene.scene_id,
+                narration=scene.narration
             )
 
             scene.audio_url = audio_url

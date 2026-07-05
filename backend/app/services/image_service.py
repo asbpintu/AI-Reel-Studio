@@ -1,22 +1,23 @@
 from PIL import Image, ImageDraw
-
-import os
-import uuid
+from app.utils.media_helper import get_script_folder
 
 
 class ImageService:
 
-    def generate(self, prompt: str):
+    def generate(
+            self,
+            script_public_id: str,
+            scene_id: int,
+            prompt: str):
 
-        os.makedirs("media/images", exist_ok=True)
-
-        filename = f"{uuid.uuid4()}.png"
-
-        filepath = os.path.join(
-            "media/images",
-            filename
+        filename = f"scene_{scene_id:02d}.png"
+        folder = get_script_folder(
+            media_type="images",
+            script_public_id=script_public_id
         )
 
+        filepath = folder / filename
+        
         image = Image.new(
             "RGB",
             (1024, 1024),
@@ -33,4 +34,4 @@ class ImageService:
 
         image.save(filepath)
 
-        return filepath
+        return str(filepath)
