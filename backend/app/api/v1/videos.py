@@ -28,3 +28,36 @@ def generate_scene_video(
         scene_public_id,
         current_user,
     )
+
+
+@router.post(
+    "/scripts/{script_public_id}/generate-videos",
+)
+def generate_videos(
+    script_public_id: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+
+    service = VideoService(db)
+
+    return service.generate_videos(
+        script_public_id,
+        current_user,
+    )
+
+
+@router.post(
+    "/script/{script_public_id}",
+)
+def generate_final_video(
+    script_public_id: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+
+    service = VideoService(db)
+
+    return service.generate_final_video(
+        script_public_id
+    )

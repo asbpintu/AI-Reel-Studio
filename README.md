@@ -124,3 +124,29 @@ AI Reel Studio
 - ✅ Image Generation (dummy)
 - ✅ Audio Generation (dummy)
 - ✅ Single Scene Video Generation (FFmpeg)
+
+
+
+
+### Date - 06-July-2026
+
+## APIs completed
+### Auth
+- ✅ Login
+- ✅ Register
+### Projects
+- ✅ CRUD
+### Scripts
+- ✅ Generate Script
+### Scenes
+- ✅ Generate Scenes
+### Images
+- ✅ Generate Image (single)
+- ✅ Generate Images (all)
+### Audios
+- ✅ Generate Audio (single)
+- ✅ Generate Audios (all)
+### Videos
+- ✅ Generate Video (single)
+- ✅ Generate Videos (all)
+- ✅ Generate Final Video
