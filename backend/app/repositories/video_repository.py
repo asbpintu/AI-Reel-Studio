@@ -20,6 +20,7 @@ class VideoRepository:
 
         self.db.add(video)
         self.db.flush()
+        self.db.refresh(video)
 
         return video
 
@@ -27,5 +28,6 @@ class VideoRepository:
 
         self.db.add(video)
         self.db.flush()
+        self.db.refresh(video)
 
         return video
