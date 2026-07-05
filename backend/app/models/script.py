@@ -54,3 +54,9 @@ class Script(BaseModel):
         back_populates="script",
         cascade="all, delete-orphan",
     )
+
+    video = relationship(
+        "Video",
+        back_populates="script",
+        uselist=False,
+    )

@@ -1,21 +1,36 @@
-from app.repositories.scene_repository import SceneRepository
-from app.repositories.script_repository import ScriptRepository
+from PIL import Image, ImageDraw
 
-from fastapi import HTTPException
-
-
-
+import os
+import uuid
 
 
 class ImageService:
 
-    def __init__(self, db):
-        self.db = db
-        self.scene_repository = SceneRepository(db)
-        self.script_repository = ScriptRepository(db)
-
     def generate(self, prompt: str):
 
-        print(prompt)
+        os.makedirs("media/images", exist_ok=True)
 
-        return "https://dummyimage.com/1024x1024"
+        filename = f"{uuid.uuid4()}.png"
+
+        filepath = os.path.join(
+            "media/images",
+            filename
+        )
+
+        image = Image.new(
+            "RGB",
+            (1024, 1024),
+            color=(30, 30, 30)
+        )
+
+        draw = ImageDraw.Draw(image)
+
+        draw.text(
+            (40, 40),
+            prompt[:250],
+            fill="white"
+        )
+
+        image.save(filepath)
+
+        return filepath

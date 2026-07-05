@@ -100,7 +100,7 @@ class SceneService:
                 detail="Scene not found."
             )
 
-        image_service = ImageService(self.db)
+        image_service = ImageService()
 
         image_url = image_service.generate(
             scene.image_prompt
@@ -174,7 +174,7 @@ class SceneService:
                 detail="No scenes found.",
             )
 
-        image_service = ImageService(self.db)
+        image_service = ImageService()
 
         for scene in scenes:
 
