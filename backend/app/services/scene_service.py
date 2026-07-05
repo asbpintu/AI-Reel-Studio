@@ -14,6 +14,7 @@ from fastapi import HTTPException
 import json
 
 from app.services.image_service import ImageService
+from app.services.audio_service import AudioService
 
 
 class SceneService:
@@ -114,6 +115,34 @@ class SceneService:
 
         return scene
     
+    def generate_audio(
+        self,
+        scene_id: int,
+        current_user,
+    ):
+        scene = self.scene_repository.get_by_scene_id(scene_id)
+
+        if scene is None:
+            raise HTTPException(
+                status_code=404,
+                detail="Scene not found."
+            )
+
+        audio_service = AudioService(self.db)
+
+        audio_url = audio_service.generate(
+            scene.narration
+        )
+
+        scene.audio_url = audio_url
+        scene.audio_status = "COMPLETED"
+
+        self.scene_repository.update(scene)
+
+        self.db.commit()
+
+        return scene
+    
     def generate_images(
         self,
         script_public_id: str,
@@ -155,6 +184,57 @@ class SceneService:
 
             scene.image_url = image_url
             scene.image_status = "COMPLETED"
+
+            self.scene_repository.update(scene)
+
+        self.db.commit()
+
+        for scene in scenes:
+            self.db.refresh(scene)
+
+        return scenes
+    
+    def generate_audios(
+        self,
+        script_public_id: str,
+        current_user,
+    ):
+        script = self.script_repository.get_by_public_id(
+            script_public_id
+        )
+
+        if script is None:
+            raise HTTPException(
+                status_code=404,
+                detail="Script not found."
+            )
+
+        if script.project.user_id != current_user.user_id:
+            raise HTTPException(
+                status_code=403,
+                detail="Access denied."
+            )
+
+        scenes = self.scene_repository.list_by_script(
+            script.script_id
+        )
+
+        if not scenes:
+            raise HTTPException(
+                status_code=404,
+                detail="No scenes found."
+            )
+
+        audio_service = AudioService(self.db)
+
+        for scene in scenes:
+
+            audio_url = audio_service.generate(
+                scene.narration
+            )
+
+            scene.audio_url = audio_url
+            scene.audio_status = "COMPLETED"
 
             self.scene_repository.update(scene)
 

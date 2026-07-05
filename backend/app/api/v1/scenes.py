@@ -11,7 +11,6 @@ from app.schemas.scene import (
     SceneCreate
     )
 from app.services.scene_service import SceneService
-from app.services.image_service import ImageService
 
 router = APIRouter(
     prefix="/scenes",
@@ -50,20 +49,15 @@ def generate_image(
 
     return service.generate_image(scene_id)
 
-
 @router.post(
-    "/scripts/{script_public_id}/generate-images",
-    response_model=list[SceneResponse],
+    "/{scene_id}/generate-audio",
+    response_model=SceneResponse,
 )
-def generate_images(
-    script_public_id: str,
+def generate_audio(
+    scene_id: int,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-
     service = SceneService(db)
 
-    return service.generate_images(
-        script_public_id,
-        current_user,
-    )
+    return service.generate_audio(scene_id, current_user)

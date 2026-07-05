@@ -47,6 +47,16 @@ class Scene(BaseModel):
         default="PENDING",
     )
 
+    audio_url: Mapped[str | None] = mapped_column(
+        "AudioUrl",
+        nullable=True,
+    )
+
+    audio_status: Mapped[str | None] = mapped_column(
+        "AudioStatus",
+        nullable=True,
+    )
+
     script = relationship(
         "Script",
         back_populates="scenes",
