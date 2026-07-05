@@ -11,7 +11,7 @@ app = FastAPI(
     version=settings.APP_VERSION,
     description="AI Reel Studio REST API",
     contact={
-        "name": "Project Data"
+        "name": "Ardhendu Shekhar"
     },
 )
 
