@@ -43,11 +43,14 @@ class SceneRepository:
 
         return scene
     
-    def get_by_scene_id(self, scene_id: int):
+    def get_by_public_id(
+        self,
+        public_id: str,
+    ):
 
         return (
             self.db.query(Scene)
-            .filter(Scene.scene_id == scene_id)
+            .filter(Scene.public_id == public_id)
             .first()
         )
     

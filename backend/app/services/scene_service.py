@@ -90,9 +90,9 @@ class SceneService:
     
     def generate_image(
         self,
-        scene_id: int,
+        public_id: str,
     ):
-        scene = self.scene_repository.get_by_scene_id(scene_id)
+        scene = self.scene_repository.get_by_public_id(public_id)
 
         if scene is None:
             raise HTTPException(
@@ -100,11 +100,11 @@ class SceneService:
                 detail="Scene not found."
             )
 
-        image_service = ImageService()
+        image_service = ImageService(self.db)
 
         image_url = image_service.generate(
             script_public_id=scene.script.public_id,
-            scene_id=scene.scene_id,
+            scene_number=scene.scene_number,
             prompt=scene.image_prompt
         )
 
@@ -119,10 +119,10 @@ class SceneService:
     
     def generate_audio(
         self,
-        scene_id: int,
+        public_id: str,
         current_user,
     ):
-        scene = self.scene_repository.get_by_scene_id(scene_id)
+        scene = self.scene_repository.get_by_public_id(public_id)
 
         if scene is None:
             raise HTTPException(
@@ -134,7 +134,7 @@ class SceneService:
 
         audio_url = audio_service.generate(
             script_public_id=scene.script.public_id,
-            scene_id=scene.scene_id,
+            scene_number=scene.scene_number,
             narration=scene.narration
         )
 
@@ -178,13 +178,13 @@ class SceneService:
                 detail="No scenes found.",
             )
 
-        image_service = ImageService()
+        image_service = ImageService(self.db)
 
         for scene in scenes:
 
             image_url = image_service.generate(
                 script_public_id=scene.script.public_id,
-                scene_id=scene.scene_id,
+                scene_number=scene.scene_number,
                 prompt=scene.image_prompt
             )
 
@@ -237,7 +237,7 @@ class SceneService:
 
             audio_url = audio_service.generate(
                 script_public_id=scene.script.public_id,
-                scene_id=scene.scene_id,
+                scene_number=scene.scene_number,
                 narration=scene.narration
             )
 

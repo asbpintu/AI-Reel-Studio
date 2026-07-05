@@ -15,11 +15,11 @@ class AudioService:
     def generate(
         self,
         script_public_id: str,
-        scene_id: int,
+        scene_number: int,
         narration: str,
     ) -> str:
         
-        filename = f"scene_{scene_id:02d}.mp3"
+        filename = f"scene_{scene_number:02d}.mp3"
         folder = get_script_folder(
             media_type="audios",
             script_public_id=script_public_id

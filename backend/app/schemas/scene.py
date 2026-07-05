@@ -13,6 +13,7 @@ class SceneCreate(BaseModel):
 class SceneResponse(BaseModel):
 
     scene_id: int
+    public_id: str
     scene_number: int
     narration: str
     image_prompt: str

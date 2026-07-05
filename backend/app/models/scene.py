@@ -1,8 +1,7 @@
 from sqlalchemy import ForeignKey, Integer, String
-
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-
 from app.models.base_model import BaseModel
+from uuid import uuid4
 
 
 class Scene(BaseModel):
@@ -13,6 +12,11 @@ class Scene(BaseModel):
         "SceneId",
         primary_key=True,
         autoincrement=True,
+    )
+
+    public_id: Mapped[str] = mapped_column(
+        "PublicId",
+        default=lambda: str(uuid4()),
     )
 
     script_id: Mapped[int] = mapped_column(
