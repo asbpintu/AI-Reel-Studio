@@ -37,27 +37,27 @@ def generate_scenes(
 
 
 @router.post(
-    "/{scene_id}/generate-image",
+    "/{scene_public_id}/generate-image",
     response_model=SceneResponse,
 )
 def generate_image(
-    scene_id: int,
+    scene_public_id: str,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
     service = SceneService(db)
 
-    return service.generate_image(scene_id)
+    return service.generate_image(scene_public_id)
 
 @router.post(
-    "/{scene_id}/generate-audio",
+    "/{scene_public_id}/generate-audio",
     response_model=SceneResponse,
 )
 def generate_audio(
-    scene_id: int,
+    scene_public_id: str,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
     service = SceneService(db)
 
-    return service.generate_audio(scene_id, current_user)
+    return service.generate_audio(scene_public_id, current_user)
