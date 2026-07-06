@@ -11,6 +11,7 @@ from app.services.ffmpeg_service import FFmpegService
 from app.utils.media_helper import get_script_folder
 
 from fastapi import HTTPException
+from fastapi.responses import FileResponse
 
 
 
@@ -198,3 +199,44 @@ class VideoService:
             )
 
         return videos
+    
+
+    def download_final_video(
+        self,
+        script_public_id: str,
+        current_user,
+    ):
+        script = self.script_repository.get_by_public_id(
+            script_public_id
+        )
+
+        if script is None:
+            raise HTTPException(
+                status_code=404,
+                detail="Script not found.",
+            )
+
+        if script.project.user_id != current_user.user_id:
+            raise HTTPException(
+                status_code=403,
+                detail="Access denied.",
+            )
+
+        folder = get_script_folder(
+            media_type="videos",
+            script_public_id=script_public_id,
+        )
+
+        final_video = folder / "final_video.mp4"
+
+        if not final_video.exists():
+            raise HTTPException(
+                status_code=404,
+                detail="Final video not found.",
+            )
+
+        return FileResponse(
+            path=str(final_video),
+            media_type="video/mp4",
+            filename=f"{script_public_id}.mp4",
+        )

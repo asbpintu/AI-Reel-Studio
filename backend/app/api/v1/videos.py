@@ -61,3 +61,20 @@ def generate_final_video(
     return service.generate_final_video(
         script_public_id
     )
+
+
+@router.get(
+    "/download/{script_public_id}",
+)
+def download_final_video(
+    script_public_id: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+
+    service = VideoService(db)
+
+    return service.download_final_video(
+        script_public_id,
+        current_user,
+    )
