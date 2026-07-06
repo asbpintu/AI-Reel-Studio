@@ -74,7 +74,8 @@ class VideoService:
 
         return {
                 "message": "Video created successfully.",
-                "video_path": str(filepath)
+                "video_path": str(filepath),
+                "video_url": f"/media/videos/{script.public_id}/{filename}"
         }
     
     def generate_final_video(
@@ -145,7 +146,7 @@ class VideoService:
 
         return {
             "message": "Final video created successfully.",
-            "video_path": str(final_video_path)
+            "video_url": f"/media/videos/{script_public_id}/final_video.mp4"
         }
     
 

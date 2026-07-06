@@ -17,7 +17,7 @@ class AudioService:
         script_public_id: str,
         scene_number: int,
         narration: str,
-    ) -> str:
+    ):
 
         filename = f"scene_{scene_number:02d}.mp3"
 
@@ -49,4 +49,4 @@ class AudioService:
             stderr=subprocess.DEVNULL,
         )
 
-        return str(filepath)
+        return {"audio_url": f"/media/audios/{script_public_id}/{filename}"}

@@ -15,6 +15,28 @@ app = FastAPI(
     },
 )
 
+from fastapi.staticfiles import StaticFiles
+from pathlib import Path
+
+
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
+
+MEDIA_DIR = BASE_DIR / "backend" / "media"
+
+MEDIA_DIR.mkdir(
+    exist_ok=True
+)
+
+print("BASE_DIR:", BASE_DIR)
+print("MEDIA_DIR:", MEDIA_DIR)
+print("MEDIA EXISTS:", MEDIA_DIR.exists())
+
+app.mount(
+    "/media",
+    StaticFiles(directory=MEDIA_DIR),
+    name="media",
+)
+
 app.include_router(api_router, prefix="/api/v1")
 
 @app.get("/")

@@ -42,4 +42,4 @@ class ImageService:
 
         image.save(filepath)
 
-        return str(filepath)
+        return {"image_url": f"/media/images/{script_public_id}/{filename}"}
