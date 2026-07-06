@@ -9,6 +9,7 @@ from app.models.video import Video
 from app.models.scene import Scene
 from app.services.ffmpeg_service import FFmpegService
 from app.utils.media_helper import get_script_folder
+from app.constants.status import ScriptStatus
 
 from fastapi import HTTPException
 from fastapi.responses import FileResponse
@@ -67,9 +68,14 @@ class VideoService:
 
         filepath = folder / filename
 
+        BASE_DIR = Path(__file__).resolve().parent.parent.parent.parent
+        image_path = BASE_DIR / "backend" / scene.image_url.lstrip("/")
+        audio_path = BASE_DIR / "backend" / scene.audio_url.lstrip("/")
+
+
         self.ffmpeg_service.create_scene_video(
-            scene.image_url,
-            scene.audio_url,
+            str(image_path),
+            str(audio_path),
             str(filepath)
         )
 
@@ -145,6 +151,9 @@ class VideoService:
             check=True,
         )
 
+        script.status = ScriptStatus.COMPLETED
+        self.script_repository.save(script)
+
         return {
             "message": "Final video created successfully.",
             "video_url": f"/media/videos/{script_public_id}/final_video.mp4"
@@ -198,7 +207,10 @@ class VideoService:
                 }
             )
 
-        return videos
+        script.status = ScriptStatus.VIDEOS_GENERATED
+        self.script_repository.save(script)
+
+        return videos   
     
 
     def download_final_video(

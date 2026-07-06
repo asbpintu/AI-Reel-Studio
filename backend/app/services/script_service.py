@@ -11,6 +11,8 @@ from app.models.script import Script
 from app.services.ai.llm_factory import LLMFactory
 from app.services.ai.prompt_builder import PromptBuilder
 
+from app.constants.status import ScriptStatus
+
 import traceback
 from openai import RateLimitError, APIError
 
@@ -172,11 +174,13 @@ class ScriptService:
             generated_script = self.ai_service.generate_text(prompt)
 
             script.generated_script = generated_script
-            script.status = "Completed"
+            script.status = ScriptStatus.SCRIPT_GENERATED
+            self.script_repository.save(script)
+
 
         except RateLimitError:
             script.status = "Failed"
-            self.script_repository.update(script)
+            self.script_repository.save(script)
 
             raise HTTPException(
                 status_code=503,
@@ -185,13 +189,13 @@ class ScriptService:
 
         except APIError as ex:
             script.status = "Failed"
-            self.script_repository.update(script)
+            self.script_repository.save(script)
 
             raise HTTPException(
                 status_code=500,
                 detail=str(ex)
             )
 
-        self.script_repository.update(script)
+        self.script_repository.save(script)
 
         return script

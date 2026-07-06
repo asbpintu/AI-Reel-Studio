@@ -15,6 +15,7 @@ import json
 
 from app.services.image_service import ImageService
 from app.services.audio_service import AudioService
+from app.constants.status import ScriptStatus
 
 
 class SceneService:
@@ -82,6 +83,9 @@ class SceneService:
 
         self.scene_repository.create_many(scenes)
         self.db.commit()
+
+        script.status = ScriptStatus.SCENES_GENERATED
+        self.script_repository.save(script)
 
         for scene in scenes:
             self.db.refresh(scene)
@@ -195,6 +199,9 @@ class SceneService:
 
         self.db.commit()
 
+        script.status = ScriptStatus.IMAGES_GENERATED
+        self.script_repository.save(script)
+
         for scene in scenes:
             self.db.refresh(scene)
 
@@ -247,6 +254,9 @@ class SceneService:
             self.scene_repository.update(scene)
 
         self.db.commit()
+
+        script.status = ScriptStatus.AUDIOS_GENERATED
+        self.script_repository.save(script)
 
         for scene in scenes:
             self.db.refresh(scene)

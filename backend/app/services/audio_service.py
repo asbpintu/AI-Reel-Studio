@@ -48,5 +48,6 @@ class AudioService:
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL,
         )
-
-        return {"audio_url": f"/media/audios/{script_public_id}/{filename}"}
+        audio_url = f"/media/audios/{script_public_id}/{filename}"
+        
+        return audio_url

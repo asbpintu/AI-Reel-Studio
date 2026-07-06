@@ -150,3 +150,37 @@ AI Reel Studio
 - ✅ Generate Video (single)
 - ✅ Generate Videos (all)
 - ✅ Generate Final Video
+
+
+### Date - 07-July-2026
+
+
+## Project pipeline till now
+
+```
+Project
+    │
+    ▼
+Script Prompt
+    │
+    ▼
+Generate Script (OpenAI)
+    │
+    ▼
+Generate Scenes
+    │
+    ▼
+Generate Images
+    │
+    ▼
+Generate Audios
+    │
+    ▼
+Generate Scene Videos
+    │
+    ▼
+Generate Final Video
+    │
+    ▼
+Status = COMPLETED
+```

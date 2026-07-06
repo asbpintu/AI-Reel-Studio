@@ -36,3 +36,12 @@ class ScriptRepository:
     def delete(self, script: Script):
         self.db.delete(script)
         self.db.commit()
+
+    def save(
+        self,
+        script,
+    ):
+        self.db.add(script)
+        self.db.commit()
+        self.db.refresh(script)
+        return script

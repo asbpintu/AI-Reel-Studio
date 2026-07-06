@@ -41,5 +41,6 @@ class ImageService:
         )
 
         image.save(filepath)
+        image_url = f"/media/images/{script_public_id}/{filename}"
 
-        return {"image_url": f"/media/images/{script_public_id}/{filename}"}
+        return image_url
