@@ -184,3 +184,17 @@ Generate Final Video
     ▼
 Status = COMPLETED
 ```
+
+- ✅ Authentication
+- ✅ CRUD
+- ✅ SQL Server integration
+- ✅ OpenAI script generation
+- ✅ Scene parsing
+- ✅ Placeholder image generation
+- ✅ Placeholder audio generation
+- ✅ FFmpeg scene video generation
+- ✅ FFmpeg final concatenation
+- ✅ Static media serving
+- ✅ Public URLs
+- ✅ Status updates
+- ✅ Swagger testing
