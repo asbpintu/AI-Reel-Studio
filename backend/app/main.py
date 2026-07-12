@@ -19,9 +19,9 @@ from fastapi.staticfiles import StaticFiles
 from pathlib import Path
 
 
-BASE_DIR = Path(__file__).resolve().parent.parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent
 
-MEDIA_DIR = BASE_DIR / "backend" / "media"
+MEDIA_DIR = BASE_DIR / "media"
 
 MEDIA_DIR.mkdir(
     exist_ok=True

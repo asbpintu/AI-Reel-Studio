@@ -47,7 +47,7 @@ def generate_image(
 ):
     service = SceneService(db)
 
-    return service.generate_image(scene_public_id)
+    return service.generate_image(scene_public_id, current_user)
 
 @router.post(
     "/{scene_public_id}/generate-audio",

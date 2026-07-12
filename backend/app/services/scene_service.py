@@ -1,5 +1,3 @@
-from urllib import response
-
 from sqlalchemy.orm import Session
 
 from app.repositories.scene_repository import SceneRepository
@@ -95,6 +93,7 @@ class SceneService:
     def generate_image(
         self,
         public_id: str,
+        current_user,
     ):
         scene = self.scene_repository.get_by_public_id(public_id)
 
@@ -102,6 +101,12 @@ class SceneService:
             raise HTTPException(
                 status_code=404,
                 detail="Scene not found."
+            )
+
+        if scene.script.project.user_id != current_user.user_id:
+            raise HTTPException(
+                status_code=403,
+                detail="Access denied."
             )
 
         image_service = ImageService(self.db)
@@ -132,6 +137,12 @@ class SceneService:
             raise HTTPException(
                 status_code=404,
                 detail="Scene not found."
+            )
+
+        if scene.script.project.user_id != current_user.user_id:
+            raise HTTPException(
+                status_code=403,
+                detail="Access denied."
             )
 
         audio_service = AudioService(self.db)

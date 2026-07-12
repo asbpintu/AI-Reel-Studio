@@ -4,17 +4,10 @@ from app.models.script import Script
 from app.repositories.script_repository import ScriptRepository
 from app.repositories.project_repository import ProjectRepository
 from app.schemas.script import ScriptCreate, ScriptUpdate
-
-from app.services.ai_service import MockAIService
-from app.models.script import Script
-
 from app.services.ai.llm_factory import LLMFactory
 from app.services.ai.prompt_builder import PromptBuilder
 
 from app.constants.status import ScriptStatus
-
-import traceback
-from openai import RateLimitError, APIError
 
 class ScriptService:
 
@@ -51,6 +44,12 @@ class ScriptService:
         script = Script(
             project_id=project.project_id,
             prompt=request.prompt,
+            keywords=request.keywords,
+            duration_seconds=request.duration_seconds,
+            language=request.language,
+            reel_type=request.reel_type,
+            voice_type=request.voice_type,
+            style=request.style,
             generated_script=None,
             status="Pending",
         )
@@ -121,6 +120,24 @@ class ScriptService:
         if request.prompt is not None:
             script.prompt = request.prompt
 
+        if request.keywords is not None:
+            script.keywords = request.keywords
+
+        if request.duration_seconds is not None:
+            script.duration_seconds = request.duration_seconds
+
+        if request.language is not None:
+            script.language = request.language
+
+        if request.reel_type is not None:
+            script.reel_type = request.reel_type
+
+        if request.voice_type is not None:
+            script.voice_type = request.voice_type
+
+        if request.style is not None:
+            script.style = request.style
+
         if request.generated_script is not None:
             script.generated_script = request.generated_script
 
@@ -169,7 +186,15 @@ class ScriptService:
             )
 
         try:
-            prompt = PromptBuilder.build_script_prompt(script.prompt)
+            prompt = PromptBuilder.build_script_prompt(
+                script.prompt,
+                keywords=script.keywords,
+                duration_seconds=script.duration_seconds,
+                language=script.language,
+                reel_type=script.reel_type,
+                voice_type=script.voice_type,
+                style=script.style,
+            )
 
             generated_script = self.ai_service.generate_text(prompt)
 
@@ -177,23 +202,13 @@ class ScriptService:
             script.status = ScriptStatus.SCRIPT_GENERATED
             self.script_repository.save(script)
 
-
-        except RateLimitError:
-            script.status = "Failed"
-            self.script_repository.save(script)
-
-            raise HTTPException(
-                status_code=503,
-                detail="OpenAI quota exceeded. Please check your API billing."
-            )
-
-        except APIError as ex:
-            script.status = "Failed"
+        except Exception as ex:
+            script.status = ScriptStatus.FAILED
             self.script_repository.save(script)
 
             raise HTTPException(
                 status_code=500,
-                detail=str(ex)
+                detail=str(ex),
             )
 
         self.script_repository.save(script)

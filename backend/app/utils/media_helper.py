@@ -1,7 +1,7 @@
 from pathlib import Path
 
 
-MEDIA_ROOT = Path("media")
+MEDIA_ROOT = Path(__file__).resolve().parent.parent.parent / "media"
 
 
 def get_script_folder(media_type: str, script_public_id: str) -> Path:

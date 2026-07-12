@@ -1,7 +1,37 @@
 class PromptBuilder:
 
     @staticmethod
-    def build_script_prompt(prompt: str) -> str:
+    def build_script_prompt(
+        prompt: str,
+        keywords: str | None = None,
+        duration_seconds: int | None = None,
+        language: str | None = None,
+        reel_type: str | None = None,
+        voice_type: str | None = None,
+        style: str | None = None,
+    ) -> str:
+
+        extra_requirements = []
+
+        if language:
+            extra_requirements.append(f"Language: {language}")
+
+        if duration_seconds:
+            extra_requirements.append(f"Duration: {duration_seconds} seconds")
+
+        if reel_type:
+            extra_requirements.append(f"Reel type: {reel_type}")
+
+        if voice_type:
+            extra_requirements.append(f"Voice type: {voice_type}")
+
+        if style:
+            extra_requirements.append(f"Style: {style}")
+
+        if keywords:
+            extra_requirements.append(f"Focus keywords: {keywords}")
+
+        requirements_text = "\n".join(extra_requirements)
 
         return f"""
     You are an expert Instagram Reel script writer.
@@ -15,6 +45,7 @@ class PromptBuilder:
     - Maximum 60 seconds
     - Conversational
     - Add a CTA at the end
+    {requirements_text}
 
     Topic:
 

@@ -68,10 +68,17 @@ class VideoService:
 
         filepath = folder / filename
 
-        BASE_DIR = Path(__file__).resolve().parent.parent.parent.parent
-        image_path = BASE_DIR / "backend" / scene.image_url.lstrip("/")
-        audio_path = BASE_DIR / "backend" / scene.audio_url.lstrip("/")
+        image_folder = get_script_folder(
+            media_type="images",
+            script_public_id=script.public_id
+        )
+        audio_folder = get_script_folder(
+            media_type="audios",
+            script_public_id=script.public_id
+        )
 
+        image_path = image_folder / f"scene_{scene.scene_number:02d}.png"
+        audio_path = audio_folder / f"scene_{scene.scene_number:02d}.mp3"
 
         self.ffmpeg_service.create_scene_video(
             str(image_path),
@@ -88,6 +95,7 @@ class VideoService:
     def generate_final_video(
         self,
         script_public_id: str,
+        current_user,
     ):
         script = self.script_repository.get_by_public_id(
             script_public_id
@@ -97,6 +105,12 @@ class VideoService:
             raise HTTPException(
                 status_code=404,
                 detail="Script not found."
+            )
+
+        if script.project.user_id != current_user.user_id:
+            raise HTTPException(
+                status_code=403,
+                detail="Access denied.",
             )
         
         scenes = self.scene_repository.list_by_script(script.script_id)

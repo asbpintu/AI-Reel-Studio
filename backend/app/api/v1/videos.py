@@ -59,7 +59,8 @@ def generate_final_video(
     service = VideoService(db)
 
     return service.generate_final_video(
-        script_public_id
+        script_public_id,
+        current_user,
     )
 
 

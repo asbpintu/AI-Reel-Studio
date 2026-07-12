@@ -34,6 +34,42 @@ class Script(BaseModel):
         "Prompt",
     )
 
+    keywords: Mapped[str | None] = mapped_column(
+        "Keywords",
+        String(500),
+        nullable=True,
+    )
+
+    duration_seconds: Mapped[int | None] = mapped_column(
+        "DurationSeconds",
+        default=30,
+        nullable=True,
+    )
+
+    language: Mapped[str | None] = mapped_column(
+        "Language",
+        String(100),
+        nullable=True,
+    )
+
+    reel_type: Mapped[str | None] = mapped_column(
+        "ReelType",
+        String(100),
+        nullable=True,
+    )
+
+    voice_type: Mapped[str | None] = mapped_column(
+        "VoiceType",
+        String(100),
+        nullable=True,
+    )
+
+    style: Mapped[str | None] = mapped_column(
+        "Style",
+        String(100),
+        nullable=True,
+    )
+
     generated_script: Mapped[str | None] = mapped_column(
         "GeneratedScript",
     )
