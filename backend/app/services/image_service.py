@@ -1,4 +1,6 @@
+from app.services.ai.gemini_image_service import GeminiImageService
 from PIL import Image, ImageDraw
+import os
 
 from app.utils.media_helper import get_script_folder
 from app.repositories.script_repository import ScriptRepository
@@ -11,6 +13,12 @@ class ImageService:
         self.db = db
         self.scene_repository = SceneRepository(db)
         self.script_repository = ScriptRepository(db)
+        # Use environment variable for the Gemini API key to avoid relying on an undefined "settings"
+        self.gemini_image_service = GeminiImageService(
+                api_key=os.getenv("GEMINI_API_KEY", "")
+            )
+        # Ensure api_key is a str (avoid None) by defaulting to empty string
+        self.gemini = self.gemini_image_service
 
     def generate(
             self,
