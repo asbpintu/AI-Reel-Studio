@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import Head from 'next/head'
-import Navbar from '../components/Navbar'
 import { apiRequest, getAuthToken, clearAuthToken } from '../lib/api'
 import { useRouter } from 'next/router'
 
@@ -9,6 +8,7 @@ export default function ScenesPage() {
   const [projectId, setProjectId] = useState('')
   const [scripts, setScripts] = useState([])
   const [scenes, setScenes] = useState([])
+  const [prefillScriptId, setPrefillScriptId] = useState('')
   const [status, setStatus] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -18,15 +18,29 @@ export default function ScenesPage() {
       router.push('/login')
       return
     }
-  }, [])
 
-  const fetchScripts = async () => {
-    if (!projectId) return
+    const pid = router.query.project_public_id || router.query.projectId || ''
+    const sid = router.query.script_public_id || router.query.scriptId || ''
+    if (pid) {
+      setProjectId(pid)
+      // fetch scripts for this project and prefill script selection if provided in the URL
+      fetchScripts(pid).then(() => {
+        if (sid) {
+          setPrefillScriptId(sid)
+        }
+      })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router.query.project_public_id, router.query.script_public_id, router.query.projectId, router.query.scriptId])
+
+  const fetchScripts = async (pid) => {
+    const pidToUse = pid || projectId
+    if (!pidToUse) return
     setLoading(true)
     setError('')
 
     try {
-      const data = await apiRequest(`/scripts/projects/${projectId}`)
+      const data = await apiRequest(`/scripts/projects/${pidToUse}`)
       setScripts(data)
     } catch (err) {
       setError(err.message)
@@ -97,7 +111,6 @@ export default function ScenesPage() {
       <Head>
         <title>Scenes | AI Reel Studio</title>
       </Head>
-      <Navbar />
       <main className="min-h-screen bg-slate-950 text-slate-100 px-6 py-10">
         <div className="mx-auto max-w-6xl space-y-8">
           <section className="rounded-3xl border border-slate-800 bg-slate-900/90 p-8 shadow-xl shadow-slate-900/40">
@@ -128,11 +141,12 @@ export default function ScenesPage() {
 
           <section className="space-y-4">
             {scripts.map((script) => (
-              <div key={script.public_id} className="rounded-3xl border border-slate-800 bg-slate-900/90 p-6 shadow-xl shadow-slate-900/20">
+              <div key={script.public_id} className={`rounded-3xl border border-slate-800 bg-slate-900/90 p-6 shadow-xl shadow-slate-900/20 ${script.public_id === prefillScriptId ? 'ring-2 ring-sky-400' : ''}`}>
                 <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                   <div>
                     <h3 className="text-xl font-semibold text-white">{script.prompt}</h3>
                     <p className="mt-2 text-slate-400">Status: {script.status}</p>
+                    {script.public_id === prefillScriptId && <p className="mt-2 text-sm text-sky-300">Prefilled script</p>}
                   </div>
                   <div className="flex flex-wrap gap-3">
                     <button
