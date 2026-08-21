@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import Head from 'next/head'
 import { apiRequest, clearAuthToken, getAuthToken } from '../lib/api'
-import Navbar from '../components/Navbar'
 import { useRouter } from 'next/router'
 
 export default function ProjectsPage() {
@@ -66,7 +65,6 @@ export default function ProjectsPage() {
       <Head>
         <title>Projects | AI Reel Studio</title>
       </Head>
-      <Navbar />
       <main className="min-h-screen bg-slate-950 text-slate-100 px-6 py-10">
         <div className="mx-auto max-w-6xl space-y-8">
           <section className="rounded-3xl border border-slate-800 bg-slate-900/90 p-8 shadow-xl shadow-slate-900/40">
@@ -117,7 +115,12 @@ export default function ProjectsPage() {
 
             <div className="mt-6 grid gap-4">
               {projects.map((project) => (
-                <div key={project.public_id} className="rounded-3xl border border-slate-800 bg-slate-950/80 p-5">
+                <div
+                  key={project.public_id}
+                  role="button"
+                  onClick={() => router.push(`/scripts?project_public_id=${project.public_id}`)}
+                  className="cursor-pointer rounded-3xl border border-slate-800 bg-slate-950/80 p-5"
+                >
                   <div className="flex items-center justify-between gap-4">
                     <div>
                       <h3 className="text-xl font-semibold text-white">{project.project_name}</h3>

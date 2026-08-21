@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import Head from 'next/head'
-import Navbar from '../components/Navbar'
 import { apiRequest, getAuthToken, clearAuthToken } from '../lib/api'
 import { useRouter } from 'next/router'
 
@@ -18,7 +17,13 @@ export default function VideosPage() {
       router.push('/login')
       return
     }
-  }, [])
+
+    const sid = router.query.script_public_id || router.query.scriptId || ''
+    if (sid) {
+      setScriptId(sid)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router.query.script_public_id, router.query.scriptId])
 
   const handleGenerateSceneVideo = async () => {
     setError('')
@@ -63,7 +68,6 @@ export default function VideosPage() {
       <Head>
         <title>Videos | AI Reel Studio</title>
       </Head>
-      <Navbar />
       <main className="min-h-screen bg-slate-950 text-slate-100 px-6 py-10">
         <div className="mx-auto max-w-6xl space-y-8">
           <section className="rounded-3xl border border-slate-800 bg-slate-900/90 p-8 shadow-xl shadow-slate-900/40">

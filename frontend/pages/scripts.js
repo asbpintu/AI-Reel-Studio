@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import Head from 'next/head'
-import Navbar from '../components/Navbar'
 import { apiRequest, getAuthToken, clearAuthToken } from '../lib/api'
 import { useRouter } from 'next/router'
 
@@ -25,21 +24,22 @@ export default function ScriptsPage() {
       return
     }
 
-    fetchScripts()
+    const pid = router.query.project_public_id || router.query.projectId || ''
+    if (pid) {
+      setProjectId(pid)
+      fetchScripts(pid)
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [router.query.project_public_id, router.query.projectId])
 
-  const fetchScripts = async () => {
+  const fetchScripts = async (pid) => {
+    const pidToUse = pid || projectId
+    if (!pidToUse) return
     setLoading(true)
     setError('')
 
-    if (!projectId) {
-      setLoading(false)
-      return
-    }
-
     try {
-      const data = await apiRequest(`/scripts/projects/${projectId}`)
+      const data = await apiRequest(`/scripts/projects/${pidToUse}`)
       setScripts(data)
     } catch (err) {
       setError(err.message)
@@ -75,6 +75,8 @@ export default function ScriptsPage() {
       setPrompt('')
       setKeywords('')
       setStatus('Script created')
+      // navigate to scenes page so user can continue the flow
+      router.push(`/scenes?project_public_id=${projectId}&script_public_id=${script.public_id}`)
     } catch (err) {
       setError(err.message)
     } finally {
@@ -107,7 +109,6 @@ export default function ScriptsPage() {
       <Head>
         <title>Scripts | AI Reel Studio</title>
       </Head>
-      <Navbar />
       <main className="min-h-screen bg-slate-950 text-slate-100 px-6 py-10">
         <div className="mx-auto max-w-6xl space-y-8">
           <section className="rounded-3xl border border-slate-800 bg-slate-900/90 p-8 shadow-xl shadow-slate-900/40">
